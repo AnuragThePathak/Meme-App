@@ -1,5 +1,6 @@
 package com.anurag.memeapp
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -17,6 +18,7 @@ import com.bumptech.glide.request.target.Target
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+//    private lateinit var currentImageUrl: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
             { response ->
                 val nameUrl = response.getString("url")
+//                currentImageUrl = nameUrl
 
 //                Glide manages the image loading and caching.
                 Glide.with(this).load(nameUrl).listener(
@@ -88,5 +91,27 @@ class MainActivity : AppCompatActivity() {
 
     fun nextMeme(view: View) = this.loadMeme()
 
-    fun shareMeme(view: View) {}
+    fun shareMeme(view: View) {
+        val intent = Intent().apply {
+            Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, R.id.image_view)  //this is the URI
+            // of the image
+            type = "image/*"
+        }
+
+        startActivity(Intent.createChooser(intent, null))
+//        Title is what to be displayed as title of sharing options.
+//        System default option is used if null is passed.
+    }
+
+//    This is the way to share the link not the image itself.
+//    fun shareMeme(view: View) {
+//        val intent = Intent().apply {
+//            Intent.ACTION_SEND
+//            putExtra(Intent.EXTRA_TEXT, currentImageUrl)
+//            type = "text/plain"
+//        }
+//
+//        startActivity(Intent.createChooser(intent,"Share to"))
+//    }
 }
