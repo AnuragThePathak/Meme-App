@@ -6,4 +6,5 @@ Using this app you'll be able to see numerous Reddit memes without going anywher
 
 <a href="https://github.com/AnuragThePathak/Meme-App/raw/b95e4d8c80e3621f293a10766066ea9bcdd80116/app/build/outputs/apk/debug/app-debug.apk">Download APK from here</a>
 
+Sample screenshot:
 <img width="34%" src="Screenshot com.anurag.memeapp.jpg" />
