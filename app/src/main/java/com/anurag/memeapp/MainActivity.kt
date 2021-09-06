@@ -17,7 +17,7 @@ import com.bumptech.glide.request.target.Target
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var currentImageUrl: String
+    private var currentImageUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
