@@ -17,7 +17,7 @@ import com.bumptech.glide.request.target.Target
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var currentImageUrl = ""
+    private var urlMeme = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,31 +30,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadMeme() {
-        val progressBar = binding.progressBar
-        progressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
 //        progressBar.isVisible=true
 
         val url = "https://meme-api.herokuapp.com/gimme"
 
-//        Creating the request using JsonObjectRequest function.
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,
-
             { response ->
-                val nameUrl = response.getString("url")
-                currentImageUrl = nameUrl
+                urlMeme = response.getString("url")
 
-//                Glide manages the image loading and caching.
-                Glide.with(this).load(nameUrl).listener(
+                Glide.with(this).load(urlMeme).listener(
                     object : RequestListener<Drawable> {
-
                         override fun onLoadFailed(
                             e: GlideException?,
                             model: Any?,
                             target: Target<Drawable>?,
                             isFirstResource: Boolean
                         ): Boolean {
-                            progressBar.visibility = View.GONE
+                            binding.progressBar.visibility = View.GONE
+//                            progressBar.isVisible = false
                             return false
                         }
 
@@ -65,37 +60,35 @@ class MainActivity : AppCompatActivity() {
                             dataSource: DataSource?,
                             isFirstResource: Boolean
                         ): Boolean {
-                            progressBar.visibility = View.GONE
+                            binding.progressBar.visibility = View.GONE
                             return false
                         }
                     }).into(binding.imageView)
             },
 
             {
-                progressBar.visibility = View.GONE
-//                progressBar.isVisible = false
-
+                binding.progressBar.visibility = View.GONE
                 Toast.makeText(
-                    this, "Something went wrong.",
-                    Toast.LENGTH_SHORT
+                    this, "Something went wrong.", Toast.LENGTH_SHORT
                 ).show()
             }
         )
 
-// Add the request to requestQueue.
+//        Access the RequestQueue through your singleton class.
         MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
     }
 
-    fun nextMeme(view: View) = this.loadMeme()
+    fun nextMeme(view: View) = loadMeme()
 
     //    This is the way to share the link not the image itself.
     fun shareMeme(view: View) {
-        val intent = Intent().apply {
-            Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, currentImageUrl)
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, urlMeme)
             type = "text/plain"
         }
 
-        startActivity(Intent.createChooser(intent, null))
+        val shareIntent = Intent.createChooser(sendIntent, "Share using")
+        startActivity(shareIntent)
     }
 }
